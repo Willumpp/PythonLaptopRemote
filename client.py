@@ -48,11 +48,16 @@ def idReleaseKey(*args):
     if key in string.ascii_letters:
         keyboard.release(key)
 
+def idMoveMouse(*args):
+    x, y = args
+    print(x,y)
+
 client_funcs = {
     "NICK": idNick,
     "MSG": idMSG,
     "HOLDKEY":idHoldKey,
     "RELEASEKEY":idReleaseKey,
+    "MVMOUSE":idMoveMouse,
 }
 
 def client_send(msgid, *args):
@@ -92,7 +97,7 @@ def on_release(key):
 def on_move(x, y):
     global move_mouse
     if move_mouse:
-        print(x, y)
+        client_send("MVMOUSE", x, y)
 
 def write_keyboard():
     # Collect events until released
