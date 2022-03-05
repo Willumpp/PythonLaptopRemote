@@ -1,7 +1,8 @@
-from pynput.keyboard import Key, Listener
+from pynput.keyboard import Key, Listener, Controller
+keyboard = Controller()
 
 def on_press(key):
-    print('{0} pressed'.format(
+    print('{0}'.format(
         key))
 
 def on_release(key):
@@ -12,5 +13,7 @@ def on_release(key):
         return False
 
 # Collect events until released
-with Listener(on_press=on_press, on_release=on_release) as listener:
-    listener.join()
+#with Listener(on_press=on_press, on_release=on_release) as listener:
+#    listener.join()
+
+keyboard.press("a")

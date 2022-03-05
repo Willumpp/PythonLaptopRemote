@@ -19,12 +19,12 @@ def idMSG(*args):
 def idHoldKey(*args):
     key = args[0]
     print(f"Key held:{key}")
-    keyboard.press(key)
+    #keyboard.press(key)
 
 def idReleaseKey(*args):
     key = args[0]
     print(f"Key released:{key}")
-    keyboard.release(key)
+    #keyboard.release(key)
 
 client_funcs = {
     "NICK": idNick,
@@ -35,6 +35,7 @@ client_funcs = {
 
 
 def client_send(msgid, *args):
+    print((msgid, args))
     message = pickle.dumps((msgid, args))
 
     client.send(message)
@@ -53,10 +54,10 @@ def receive():
             break
 
 def on_press(key):
-    client_send("HOLDKEY", key)
+    client_send("HOLDKEY", "{0}".format(key))
 
 def on_release(key):
-    client_send("RELEASEKEY", key)
+    client_send("RELEASEKEY", "{0}".format(key))
 
 def write():
     # Collect events until released

@@ -12,7 +12,7 @@ server.listen() #this is for enabling the server to accept connections
 
 clients = [] #list of client sockets
 
-def broadcast_raw(message, exclient=None):
+def broadcast_raw(message, exclient=""):
     for client in clients:
         if client != exclient:
             client.send(message)
