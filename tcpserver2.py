@@ -1,4 +1,5 @@
 import socket
+from socket_commands import *
 
 HEADERSIZE = 10
 
@@ -8,22 +9,22 @@ HEADERSIZE = 10
 
 
 T_PORT = 58352
-TCP_IP = '127.0.0.1'
+TCP_IP = '192.168.0.40'
 BUF_SIZE = 30
 
-# create a socket object name 'k'
-k = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-k.bind((TCP_IP, T_PORT))
-k.listen(1) #"max_clients" or the capacity of the queue of clients
+server_socket = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind((TCP_IP, T_PORT))
+server_socket.listen(1) #"max_clients" or the capacity of the queue of clients
 
 
 print("bound socket")
 
 while True :
-    client_socket, addr = k.accept() #returns the address of the client and the socket
+    client_socket, addr = server_socket.accept() #returns the address of the client and the socket
     print(f"conncetion from {addr} has been established")
-    
-    msg = "Welcome to server"
-    msg = f"{len(msg):<{HEADERSIZE}}" + msg
-    
-    client_socket.send(bytes(msg, "utf-8")) #send via the socket
+
+    send_message(client_socket, "Welcome to server", HEADERSIZE)
+
+    full_msg = ""
+    new_msg = True
+

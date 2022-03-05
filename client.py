@@ -1,31 +1,33 @@
 import socket
+import threading
 
-HEADERSIZE = 10
-T_PORT = 58352
-TCP_IP = '127.0.0.1'
+nickname = input("input nickname: ")
 
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(("192.168.0.40", 58352))
 
-k = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-k.connect((TCP_IP, T_PORT))
-
-while True:
-
-    full_msg = ""
-    new_msg = True
-
+def receive():
     while True:
-        msg = k.recv(16)
-        if new_msg:
-            print(f"New messge length: {msg[:HEADERSIZE]}")
-            msglen = int(msg[:HEADERSIZE])
-            new_msg = False
+        try:
+            message = client.recv(1024).decode("ascii") #recieving from the server
+            if message == "NICK":
+                client.send(nickname.encode("ascii"))
+            else:
+                print(message)
 
-        full_msg += msg.decode("utf-8")
+        except:
+            print("Error with recieving message")
+            client.close()
+            break
 
-        if len(full_msg) - HEADERSIZE == msglen:
-            print("full msg recieved")
-            print(full_msg[HEADERSIZE:])
-            new_msg = True
-            full_msg = ""
+def write():
+    while True:
+        message = f"{nickname}: {input('')}"
+        client.send(message.encode("ascii"))
 
-    print(full_msg)
+
+receive_thread = threading.Thread(target=receive)
+receive_thread.start()
+
+write_thread = threading.Thread(target=write)
+write_thread.start()
