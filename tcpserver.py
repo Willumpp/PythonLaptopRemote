@@ -1,5 +1,5 @@
 import socket
-T_PORT = 1234
+T_PORT = 58352
 TCP_IP = '127.0.0.1'
 BUF_SIZE = 30
 # create a socket object name 'k'

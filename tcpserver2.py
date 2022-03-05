@@ -7,7 +7,7 @@ HEADERSIZE = 10
 #   recieving end reads the buffer stream until the size is reached
 
 
-T_PORT = 1234
+T_PORT = 58352
 TCP_IP = '127.0.0.1'
 BUF_SIZE = 30
 
