@@ -76,14 +76,14 @@ def client_send(msgid, *args):
 #This is for the client recieving packets from the server
 def receive():
     while True:
-        try:
-            msgid, args = pickle.loads(client.recv(1024)) #recieving bytes from the server
-            client_funcs[msgid](*args)
+        #try:
+        msgid, args = pickle.loads(client.recv(1024)) #recieving bytes from the server
+        client_funcs[msgid](*args)
 
-        except:
-            print("Error with recieving message")
-            client.close()
-            break
+        #except:
+        #    print("Error with recieving message")
+        #    client.close()
+        #    break
 
 def on_press(key):
     if key != Key.esc:
@@ -103,7 +103,7 @@ def on_release(key):
 def on_move(x, y):
     global move_mouse
     if move_mouse:
-        client_send("MVMOUSE", x / pyautogui.size()[0], y / pyautogui.size()[1])
+        client_send("MVMOUSE", round(x / pyautogui.size()[0], 3), round(y / pyautogui.size()[1], 3))
 
 def write_keyboard():
     # Collect events until released
