@@ -31,9 +31,6 @@ def client_send(client, msgid, *args):
     client_send_raw(client, message)
 
 
-
-
-
 def handle(client):
     while True:
         try:
