@@ -2,7 +2,10 @@ import socket
 import threading
 import pickle
 from pynput.keyboard import Key, Listener, Controller
+import pynput.mouse
 import string
+
+move_mouse = False
 
 keymap = {
     "Key.space":Key.space,
@@ -52,7 +55,6 @@ client_funcs = {
     "RELEASEKEY":idReleaseKey,
 }
 
-
 def client_send(msgid, *args):
     print((msgid, args))
     message = pickle.dumps((msgid, args))
@@ -73,19 +75,40 @@ def receive():
             break
 
 def on_press(key):
-    client_send("HOLDKEY", "{0}".format(key))
+    global move_mouse
+    if key != Key.esc:
+        client_send("HOLDKEY", "{0}".format(key))
+    else:
+        move_mouse = True
 
 def on_release(key):
-    client_send("RELEASEKEY", "{0}".format(key))
+    global move_mouse
 
-def write():
+    if key != Key.esc:
+        client_send("RELEASEKEY", "{0}".format(key))
+    else:
+        move_mouse = False
+
+def on_move(x, y):
+    global move_mouse
+    if move_mouse:
+        print(x, y)
+
+def write_keyboard():
     # Collect events until released
-    with Listener(on_press=on_press, on_release=on_release) as listener:
+    with Listener(on_press=on_press, on_release=on_release, on_move=on_move) as listener:
+        listener.join()
+
+def write_mouse():
+    # Collect events until released
+    with pynput.mouse.Listener(on_move=on_move) as listener:
         listener.join()
 
 receive_thread = threading.Thread(target=receive)
 receive_thread.start()
 
 if type == "s":
-    write_thread = threading.Thread(target=write)
+    write_thread = threading.Thread(target=write_keyboard)
+    write_thread.start()
+    write_thread = threading.Thread(target=write_mouse)
     write_thread.start()
