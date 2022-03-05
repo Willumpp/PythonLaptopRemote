@@ -54,12 +54,16 @@ def idMoveMouse(*args):
     x, y = args
     pyautogui.moveTo(x * pyautogui.size()[0], y * pyautogui.size()[1])
 
+def idMouseClick(*args):
+    pyautogui.click()
+
 client_funcs = {
     "NICK": idNick,
     "MSG": idMSG,
     "HOLDKEY":idHoldKey,
     "RELEASEKEY":idReleaseKey,
     "MVMOUSE":idMoveMouse,
+    "MOUSECLICK":idMouseClick
 }
 
 def client_send(msgid, *args):
@@ -92,6 +96,9 @@ def on_release(key):
         client_send("RELEASEKEY", "{0}".format(key))
     else:
         move_mouse = not move_mouse
+
+    if key == Key.alt:
+        client_send("MOUSECLICK")
 
 def on_move(x, y):
     global move_mouse

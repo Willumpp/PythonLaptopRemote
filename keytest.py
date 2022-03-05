@@ -44,4 +44,5 @@ mouse = pynput.mouse.Controller()
 #print(mouse.positiion)
 mouse.positiion = (0, 0)
 
-pyautogui.moveTo(10,10)
+pyautogui.moveTo(10,50)
+pyautogui.click()
