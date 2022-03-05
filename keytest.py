@@ -1,5 +1,6 @@
 from pynput.keyboard import Key, Listener, Controller
 import pynput.mouse
+import pyautogui
 import threading
 
 import string
@@ -18,8 +19,8 @@ def on_release(key):
         return False
 
 def on_move(x, y):
-    print(x, y)
-
+#    print(x, y)
+    pass
 
 def keylistener():
         
@@ -38,3 +39,9 @@ def mouselistener():
 
 threading.Thread(target=keylistener).start()
 threading.Thread(target=mouselistener).start()
+
+mouse = pynput.mouse.Controller()
+#print(mouse.positiion)
+mouse.positiion = (0, 0)
+
+pyautogui.moveTo(10,10)

@@ -3,6 +3,7 @@ import threading
 import pickle
 from pynput.keyboard import Key, Listener, Controller
 import pynput.mouse
+import pyautogui
 import string
 
 move_mouse = False
@@ -18,6 +19,7 @@ client.connect(("192.168.0.40", 58352))
 
 type = input("Recieve or send (r/s): ")
 keyboard = Controller()
+mouse = pynput.mouse.Controller()
 
 def idNick(*args):
     client.send(nickname.encode("ascii"))
@@ -50,7 +52,7 @@ def idReleaseKey(*args):
 
 def idMoveMouse(*args):
     x, y = args
-    print(x,y)
+    pyautogui.moveTo(x * pyautogui.size()[0], y * pyautogui.size()[1])
 
 client_funcs = {
     "NICK": idNick,
@@ -80,11 +82,8 @@ def receive():
             break
 
 def on_press(key):
-    global move_mouse
     if key != Key.esc:
         client_send("HOLDKEY", "{0}".format(key))
-    else:
-        move_mouse = True
 
 def on_release(key):
     global move_mouse
@@ -92,12 +91,12 @@ def on_release(key):
     if key != Key.esc:
         client_send("RELEASEKEY", "{0}".format(key))
     else:
-        move_mouse = False
+        move_mouse = not move_mouse
 
 def on_move(x, y):
     global move_mouse
     if move_mouse:
-        client_send("MVMOUSE", x, y)
+        client_send("MVMOUSE", x / pyautogui.size()[0], y / pyautogui.size()[1])
 
 def write_keyboard():
     # Collect events until released
