@@ -11,11 +11,13 @@ server.bind((host, port))
 server.listen() #this is for enabling the server to accept connections
 
 clients = [] #list of client sockets
+nicknames = [] #custom name client chooses
 
-def broadcast_raw(message, exclient=None):
+
+
+def broadcast_raw(message):
     for client in clients:
-        if client != exclient:
-            client.send(message)
+        client.send(message)
 
 def client_send_raw(client, message):
     client.send(message)
@@ -38,13 +40,17 @@ def handle(client):
     while True:
         try:
             message = client.recv(1024) #wait until a message is recieved by a client
-            broadcast_raw(message, exclient=client)
+            broadcast_raw(message)
         except:
             #listening for socket failed...
             print("error recieving message and/or client disconnected")
             index = clients.index(client)
             clients.remove(client)
             client.close()
+            nickname = nicknames[index]
+            nicknames.remove(nickname)
+
+            broadcast("MSG", f"{nickname} left the chat")
             break
 
 
@@ -57,8 +63,14 @@ def receive():
         #client = the client's socket
         client, address = server.accept() #wait until a new client connects to the server
         print(f"Connected with {str(address)}")
-        clients.append(client)
 
+        client_send(client, "NICK")
+        nickname = client.recv(1024).decode("ascii") #recieves the nickname after the request
+        nicknames.append(nickname)
+        clients.append(client)
+        print(f"Nickname of client {nickname}")
+
+        broadcast("MSG", f"{nickname} joined the chat")
         client_send(client, "MSG", "connected to the server")
 
         #creates a thread for listening to the client
